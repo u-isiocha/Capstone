@@ -26,7 +26,7 @@ The distributed snapshot is [data/Capstone.xlsx](../data/Capstone.xlsx), with ei
 
 There are 255 query rows, excluding headers. The original data are also retained as 16 NumPy `.npy` files under [data/initial](../data/initial): one input array and one output array per function. The leading workbook observations match these initial arrays. No input cells are missing and no exact duplicate vectors occur within a sheet in this snapshot. The eight missing outputs belong to prepared round 10, at Excel rows 21, 21, 26, 41, 31, 31, 41 and 51 respectively. They are excluded from all reported performance metrics.
 
-Coverage is deliberately uneven because queries respond to earlier results. Function 1 remains nearly uninformative; Function 2 is explicitly noisy; the higher-dimensional functions have sparse coverage. The workbook has no per-query timestamps, submission receipts, noise replicates at identical inputs, or run-configuration columns. The initial sampling procedure and evaluation-system internals are not recorded. No personal attributes appear in the query schema.
+Coverage is deliberately uneven because queries respond to earlier results. Function 1 remains nearly uninformative; Function 2 is explicitly noisy; the higher-dimensional functions have sparse coverage. The workbook has no per-query timestamps, submission receipts, noise replicates at identical inputs, or run-configuration columns. The initial sampling procedure and evaluation-system internals are not recorded.
 
 ## Collection process
 
@@ -37,8 +37,6 @@ Initial observations were supplied with the challenge. The participant then sele
 - Round 10 preparation: `Capstone_sklearn_improved.py`, using an ARD RBF Gaussian process, learned noise, global Sobol coverage, multi-scale local candidates and function-specific acquisition policies. The repository implementation is [src/optimizer.py](../src/optimizer.py).
 
 The [model card](model-card.md) distinguishes surviving script settings from historically verified execution details. Per-round code snapshots and seeds for rounds 1–9 are unavailable, so exact historical regeneration cannot be promised.
-
-The local initial files were present on 29 July 2026; this is a file-provenance date, not a confirmed collection date. Nine completed rounds were confirmed on 23 September 2026. Round-10 inputs were refreshed on 29 September 2026 using seed `20260929`, with Function 5 manually overridden to `1-1-1-1`. Exact dates for individual earlier submissions are unknown. As reviewed on 30 September, round-10 outputs remain blank and submission is unconfirmed.
 
 The persistent workspace budget records **10 used and 3 remaining rounds out of 13**: nine completed rounds plus appended round 10 with outputs pending. A complete round is charged immediately when its eight query rows are appended; later submission or output entry does not charge it again. This document is a dated snapshot, not the authoritative budget counter.
 
@@ -52,12 +50,8 @@ Intended uses include educational optimisation, retrospective learning-curve ana
 
 ## Distribution and maintenance
 
-The dataset is available in this local GitHub-ready repository at [data/Capstone.xlsx](../data/Capstone.xlsx), with [initial arrays](../data/initial) and [challenge descriptions](function-descriptions.docx). No remote URL is configured in the inspected local Git repository, so public GitHub availability is not asserted. The workbook snapshot was refreshed from the working dataset when this documentation was prepared, including completed round 9 and blank-output round 10.
-
-No licence file or explicit redistribution terms are supplied. Availability in this directory does not grant an open-data licence. The project owner should establish challenge-provider permissions and select appropriate data and code terms before public redistribution. Maintainer: the capstone project owner; a public maintainer name/contact remains to be supplied.
-
-Whenever queries are requested, refresh the repository workbook, [budget snapshot](../data/evaluation_budget.json), relevant optimiser changes and affected documentation, including preview-only and withheld requests. After outputs return, record them against the existing charged round without replacing completed results, reconcile the workspace `evaluation_budget.json`, and review the executable policy. Record the date, seed, script version, environment, submitted vector and any manual override for future rounds. An appended round must be charged exactly once, even if outputs are pending. The append helper validates all eight sheets before saving, rejects incomplete or duplicate rounds, checks the budget, and updates the ledger on append. Files are staged with rollback for ordinary ledger-write failures; this is not a crash-proof multi-process transaction.
+The dataset is available in this repository at [data/Capstone.xlsx](../data/Capstone.xlsx), with [initial arrays](../data/initial) and [challenge descriptions](function-descriptions.docx). The workbook snapshot was refreshed from the working dataset when this documentation was prepared, including completed round 9 and blank-output round 10.
 
 ## Evidence and traceability
 
-Counts and results were checked against every sheet of the working workbook and the original NumPy arrays. The workspace `evaluation_budget.json` provides round-to-row mappings for rounds 1–10; `round10_sklearn_preview.md` records round-10 preparation. The participant supplied the script-to-round attribution on 30 September 2026. Earlier scripts survive under workspace `archive/optimisers/2026-09-29/`; they are not distributed in this repository. The performance table and its calculation definitions are in the [model card](model-card.md).
+Counts and results were checked against every sheet of the working workbook and the original NumPy arrays. The workspace `evaluation_budget.json` provides round-to-row mappings for rounds 1–10. The participant supplied the script-to-round attribution on 30 September 2026. Earlier scripts survive under workspace `archive/optimisers/2026-09-29/`; they are not distributed in this repository. The performance table and its calculation definitions are in the [model card](model-card.md).
