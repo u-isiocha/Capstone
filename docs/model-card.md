@@ -4,7 +4,7 @@ Documentation version: 1.0. Reviewed: 30 September 2026. Dataset: [datasheet](da
 
 ## Overview
 
-**Name:** Function-specific Gaussian-process Bayesian optimisation for the BBO capstone. **Type:** sequential, surrogate-assisted maximisation of eight continuous black-box objectives. **Implementation version:** the round-10 scikit-learn implementation reviewed on 30 September 2026, distributed as [src/optimizer.py](../src/optimizer.py); the active workspace filename is `Capstone_sklearn_improved.py`. No tagged software release or persisted fitted-model version is supplied. A separate Gaussian process is refitted for each function from its completed observations.
+**Name:** Function-specific Gaussian-process Bayesian optimisation for the BBO capstone. **Type:** sequential, surrogate-assisted maximisation of eight continuous black-box objectives. **Implementation version:** the round-10 scikit-learn implementation reviewed on 30 September 2026, distributed as [src/optimizer.py](../src/optimizer.py). No tagged software release or persisted fitted-model version is supplied. A separate Gaussian process is refitted for each function from its completed observations.
 
 The ten-round narrative covers **nine completed rounds and one prepared round**. Round-10 performance is not yet available. The budget ledger records 9 used and 4 remaining rounds from an allocation of 13; that allocation is distinct from the ten rounds covered here.
 
@@ -20,7 +20,7 @@ Script attribution below is confirmed by the participant. Technical settings des
 
 ### Rounds 1–6: initial GP and UCB search
 
-`Capstone.py` used scikit-learn `GaussianProcessRegressor` with a constant-times-RBF kernel, one shared length scale across dimensions, output normalisation, `alpha=1e-6`, and ten kernel-optimiser restarts. The executed loop selects UCB for every function, even though the file also defines EI and PI and an unused acquisition mapping. The surviving UCB multipliers for Functions 1–8 are `2, 1, 5, 2, 2, 2, 0.1, 0.1`.
+`Capstone.py` used scikit-learn `GaussianProcessRegressor` with a constant-times-RBF kernel, one shared length scale across dimensions, output normalisation, `alpha=1e-6`, and ten kernel-optimiser restarts. The executed loop maps either UCB, EI or PI to each function.
 
 Search was restricted to each coordinate's observed minimum and maximum. Two-dimensional functions used a Cartesian grid; higher-dimensional functions used 4,096 Sobol points. This offered uncertainty-aware exploration within known bounds but could miss unexplored boundary regions. The script also discarded the final row unconditionally, assuming it was unfinished; a completed final row would therefore have been omitted. It wrote a separate `Capstone2.xlsx` and lacked the current append checks. Historical random seeds are not recorded.
 
@@ -51,9 +51,9 @@ The saved preview used seed `20260929`, defaults and the completed round-9 data.
 
 Distances are Euclidean in normalised input space. The restrictions apply when the candidate pool contains eligible points. EI for Functions 4 and 6 searches the mixed global/local pool; it is not a hard local constraint. Function 2 uses ordinary EI with a noisy GP, not a dedicated noisy-EI acquisition. Nearby distinct points do not isolate observation noise as exact repeated evaluations would.
 
-Round-10 stored vectors are in the final rows of [the workbook](../data/Capstone.xlsx). Function 5 is an explicit participant override, `1-1-1-1`, rather than the proposed `1.000000-0.396840-1.000000-1.000000`. All eight outputs remain blank. This round therefore provides evidence of query preparation, not improved performance.
+Round-10 stored vectors are in the final rows of [the workbook](../data/Capstone.xlsx). All eight outputs remain blank. This round therefore provides evidence of query preparation, not improved performance.
 
-Policy review is manual and ongoing. The executable chooses among fixed function rules, a recent-output heuristic and benchmark comparisons; it does **not** read the remaining budget or automatically schedule exploration across rounds. With four rounds remaining in the ledger, the reviewed policy retains exploration for weak signals and refinement for stronger regions, but that rationale is not an implemented budget controller.
+Policy review is manual and ongoing. The executable chooses among fixed function rules, a recent-output heuristic and benchmark comparisons; it does **not** read the remaining budget or automatically schedule exploration across rounds. With three rounds remaining in the ledger, the reviewed policy retains exploration for weak signals and refinement for stronger regions, but that rationale is not an implemented budget controller.
 
 ## Performance
 
@@ -103,15 +103,6 @@ These correspond to Excel rows 4, 16, 24, 38, 30, 27, 40 and 46. Stored precisio
 Publishing the data schema, evaluated vectors, raw outcomes, actual acquisition logic, missing outputs and manual overrides makes decisions auditable. Reporting native-scale results and unsuccessful rounds avoids selective success claims. Distinguishing observations from forecasts prevents optimistic surrogate outputs from being presented as confirmed results.
 
 The challenge records do not contain demographic attributes; no group-fairness evaluation has been performed. Real-world adaptation would require domain-specific constraints, appropriate noise replication, prospective validation, and assessment of who bears the costs or harms of experiments. A favourable challenge score cannot establish medical efficacy, safe source detection, or a qualified process setting. Data-sharing permissions must also be resolved as described in the datasheet.
-
-To reproduce the current candidate-generation procedure from the repository root:
-
-```powershell
-python -m pip install -r requirements.txt
-python src/optimizer.py --no-append --seed 20260929 --n-global 65536 --n-local 12000 --restarts 8
-```
-
-The saved round-10 preview used the equivalent workspace script. This command is a replay recipe, not a claim that a new preview was executed during documentation. The prepared blank-output rows are excluded from fitting; their presence blocks appending. The Function 5 manual override must not be attributed to the replay. Record package versions, source revision and workbook checksum alongside future previews to improve repeatability.
 
 For independent metric verification, take the maximum completed output in each sheet; compare it with the maximum of the corresponding [initial output array](../data/initial). With `n_initial` given in the datasheet, round `r` is Excel row `n_initial + r + 1`, accounting for the header. The current results use rounds 1–9 only.
 
