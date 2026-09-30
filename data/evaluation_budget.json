@@ -1,0 +1,152 @@
+{
+  "schema_version": 1,
+  "total_rounds": 13,
+  "used_rounds": 10,
+  "remaining_rounds": 3,
+  "status": "active",
+  "functions_per_round": 8,
+  "counting_rule": "One complete eight-function round consumes one evaluation per function immediately when its input rows are appended, even while outputs are pending. Charge each round once; submission, replacement of pending inputs, and returned outputs do not charge again. Preview-only generation consumes no budget.",
+  "round_log": [
+    {
+      "round": 1,
+      "status": "completed",
+      "workbook_rows": {
+        "function_1": 12,
+        "function_2": 12,
+        "function_3": 17,
+        "function_4": 32,
+        "function_5": 22,
+        "function_6": 22,
+        "function_7": 32,
+        "function_8": 42
+      }
+    },
+    {
+      "round": 2,
+      "status": "completed",
+      "workbook_rows": {
+        "function_1": 13,
+        "function_2": 13,
+        "function_3": 18,
+        "function_4": 33,
+        "function_5": 23,
+        "function_6": 23,
+        "function_7": 33,
+        "function_8": 43
+      }
+    },
+    {
+      "round": 3,
+      "status": "completed",
+      "workbook_rows": {
+        "function_1": 14,
+        "function_2": 14,
+        "function_3": 19,
+        "function_4": 34,
+        "function_5": 24,
+        "function_6": 24,
+        "function_7": 34,
+        "function_8": 44
+      }
+    },
+    {
+      "round": 4,
+      "status": "completed",
+      "workbook_rows": {
+        "function_1": 15,
+        "function_2": 15,
+        "function_3": 20,
+        "function_4": 35,
+        "function_5": 25,
+        "function_6": 25,
+        "function_7": 35,
+        "function_8": 45
+      }
+    },
+    {
+      "round": 5,
+      "status": "completed",
+      "workbook_rows": {
+        "function_1": 16,
+        "function_2": 16,
+        "function_3": 21,
+        "function_4": 36,
+        "function_5": 26,
+        "function_6": 26,
+        "function_7": 36,
+        "function_8": 46
+      }
+    },
+    {
+      "round": 6,
+      "status": "completed",
+      "workbook_rows": {
+        "function_1": 17,
+        "function_2": 17,
+        "function_3": 22,
+        "function_4": 37,
+        "function_5": 27,
+        "function_6": 27,
+        "function_7": 37,
+        "function_8": 47
+      }
+    },
+    {
+      "round": 7,
+      "status": "completed",
+      "workbook_rows": {
+        "function_1": 18,
+        "function_2": 18,
+        "function_3": 23,
+        "function_4": 38,
+        "function_5": 28,
+        "function_6": 28,
+        "function_7": 38,
+        "function_8": 48
+      }
+    },
+    {
+      "round": 8,
+      "status": "completed",
+      "workbook_rows": {
+        "function_1": 19,
+        "function_2": 19,
+        "function_3": 24,
+        "function_4": 39,
+        "function_5": 29,
+        "function_6": 29,
+        "function_7": 39,
+        "function_8": 49
+      }
+    },
+    {
+      "round": 9,
+      "status": "completed",
+      "workbook_rows": {
+        "function_1": 20,
+        "function_2": 20,
+        "function_3": 25,
+        "function_4": 40,
+        "function_5": 30,
+        "function_6": 30,
+        "function_7": 40,
+        "function_8": 50
+      }
+    },
+    {
+      "round": 10,
+      "status": "appended_outputs_pending",
+      "workbook_rows": {
+        "function_1": 21,
+        "function_2": 21,
+        "function_3": 26,
+        "function_4": 41,
+        "function_5": 31,
+        "function_6": 31,
+        "function_7": 41,
+        "function_8": 51
+      }
+    }
+  ],
+  "policy_updated_on": "2026-09-30"
+}

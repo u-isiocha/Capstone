@@ -26,7 +26,7 @@ The script reports the fitted kernel, current best observation, trend diagnosis,
 
 Output-only external observations are benchmarks, never training rows. The recorded benchmarks are `-0.00551` for Function 3, `2883.2` for Function 5, and `9.9369` for Function 8. The workbook observations currently exceed the Function 5 and Function 8 benchmarks, while Function 3 still warrants broader exploration.
 
-Append mode never overwrites outputs, never treats blanks as zero, and never appends when a sheet's final output is blank. It blocks duplicate vectors, copies the previous row's formatting, and does not resave the workbook when every recommendation is withheld. Use `--no-append` for preview and `--seed` for reproducibility.
+Append mode never overwrites outputs, never treats blanks as zero, and never appends when a sheet's final output is blank. It blocks duplicate vectors, copies the previous row's formatting, and does not resave the workbook when every recommendation is withheld. All eight sheets must pass validation before any candidate is appended. Appending immediately charges one round in the budget ledger, including pending outputs; later submission or output entry does not charge it again. Use `--no-append` for an uncharged preview and `--seed` for reproducibility. Refresh the local repository data and budget snapshot on every query request.
 
 ## Limitations
 

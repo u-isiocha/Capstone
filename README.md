@@ -26,7 +26,7 @@ Preview recommendations without changing the workbook:
 python src/optimizer.py --no-append --seed 20260825
 ```
 
-To append an eligible recommendation, omit `--no-append`. The script appends only when the prior row in that function's sheet has a completed output, preserves the row formatting, and leaves the new output blank for the next black-box evaluation.
+To append an eligible recommendation, omit `--no-append`. The script validates all eight sheets before appending a complete round, preserves row formatting, and leaves outputs blank. Appending immediately charges one round in `data/evaluation_budget.json`; later submission and returned outputs do not charge it again. A pending row or duplicate candidate withholds the entire round. The local repository is refreshed whenever queries are requested, including previews.
 
 ## Inputs and outputs
 

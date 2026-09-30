@@ -6,7 +6,7 @@ Documentation version: 1.0. Reviewed: 30 September 2026. Dataset: [datasheet](da
 
 **Name:** Function-specific Gaussian-process Bayesian optimisation for the BBO capstone. **Type:** sequential, surrogate-assisted maximisation of eight continuous black-box objectives. **Implementation version:** the round-10 scikit-learn implementation reviewed on 30 September 2026, distributed as [src/optimizer.py](../src/optimizer.py). No tagged software release or persisted fitted-model version is supplied. A separate Gaussian process is refitted for each function from its completed observations.
 
-The ten-round narrative covers **nine completed rounds and one prepared round**. Round-10 performance is not yet available. The budget ledger records 9 used and 4 remaining rounds from an allocation of 13; that allocation is distinct from the ten rounds covered here.
+The ten-round narrative covers **nine completed rounds and one prepared round**. Round-10 performance is not yet available. There is one budget: 13 total rounds, 10 used and 3 remaining. The ledger includes nine completed rounds and appended round 10, which is charged immediately even though its outputs are pending. Submission and output entry do not charge an appended round again.
 
 ## Intended use
 
@@ -53,7 +53,7 @@ Distances are Euclidean in normalised input space. The restrictions apply when t
 
 Round-10 stored vectors are in the final rows of [the workbook](../data/Capstone.xlsx). All eight outputs remain blank. This round therefore provides evidence of query preparation, not improved performance.
 
-Policy review is manual and ongoing. The executable chooses among fixed function rules, a recent-output heuristic and benchmark comparisons; it does **not** read the remaining budget or automatically schedule exploration across rounds. With three rounds remaining in the ledger, the reviewed policy retains exploration for weak signals and refinement for stronger regions, but that rationale is not an implemented budget controller.
+Policy review is manual and ongoing. The executable chooses among fixed function rules, a recent-output heuristic and benchmark comparisons; the query workflow reads and enforces the remaining budget, but acquisition selection does **not** automatically schedule exploration across rounds. With three rounds remaining in the ledger, the reviewed policy retains exploration for weak signals and refinement for stronger regions, but that rationale is not an implemented budget controller.
 
 ## Performance
 
@@ -95,7 +95,7 @@ These correspond to Excel rows 4, 16, 24, 38, 30, 27, 40 and 46. Stored precisio
 - The trend heuristic compares blocks of six observations and uses scale-based thresholds. Early blocks may mix initial and sequential observations. Its Function 2 label “noisy and recently worsening” is triggered by recent spread and does not independently test a downward trend. Function 6's recent deterioration illustrates why human review remains necessary.
 - Function 5's back-transformed centre is `exp(log-space mean)`, a median under a log-normal interpretation, not the log-normal expectation. Its reported uncertainty uses a delta approximation. Acquisition is calculated in log space, although performance is reported on the original scale.
 - Forecasts beyond all observed scores are unverified extrapolations. Neither a positive Function 6 forecast nor a tiny Function 1 response proves an attainable optimum.
-- The script blocks automatic duplicate appends, so exact noise replication requires a separately controlled workflow. Per-sheet append guards do not enforce all-or-nothing round preparation, submission status, or the total budget.
+- The script blocks automatic duplicate appends, so exact noise replication requires a separately controlled workflow. The append helper validates the whole round and charges it immediately, with staged files and rollback for ordinary ledger-write errors. It is not a crash-proof multi-process transaction and does not confirm external submission.
 - Earlier run environments and seeds are incomplete; dependencies in `requirements.txt` are not version-pinned. Replaying the current algorithm is more reproducible than reconstructing every historical query.
 
 ## Transparency, reproducibility and ethical considerations
@@ -106,4 +106,4 @@ The challenge records do not contain demographic attributes; no group-fairness e
 
 For independent metric verification, take the maximum completed output in each sheet; compare it with the maximum of the corresponding [initial output array](../data/initial). With `n_initial` given in the datasheet, round `r` is Excel row `n_initial + r + 1`, accounting for the header. The current results use rounds 1–9 only.
 
-Maintainer: the capstone project owner; public contact and release terms remain unspecified. Refresh this card after each completed evaluation and any substantive policy change. Supporting evidence consists of the [workbook](../data/Capstone.xlsx), [function descriptions](function-descriptions.docx), [current implementation](../src/optimizer.py), the participant's script attribution, and the workspace budget, archived scripts and round-10 preview identified in the [datasheet](datasheet.md).
+Maintainer: the capstone project owner; public contact and release terms remain unspecified. Refresh repository data, the budget snapshot and affected documentation whenever queries are requested, after completed evaluations and after substantive policy changes. Supporting evidence consists of the [workbook](../data/Capstone.xlsx), [function descriptions](function-descriptions.docx), [current implementation](../src/optimizer.py), the participant's script attribution, and the workspace budget, archived scripts and round-10 preview identified in the [datasheet](datasheet.md).

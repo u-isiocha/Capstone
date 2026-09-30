@@ -9,6 +9,7 @@ Preview: python src/optimizer.py --no-append --seed 20260825
 from __future__ import annotations
 
 import argparse
+from capstone_rounds import append_round, read_budget, refresh_repository
 from copy import copy
 from dataclasses import dataclass
 from datetime import datetime
@@ -257,45 +258,8 @@ def recommend(
 def append_recommendations(
     workbook: Path, recommendations: dict[str, Recommendation]
 ) -> dict[str, str]:
-    from openpyxl import load_workbook
-
-    book = load_workbook(workbook)
-    statuses: dict[str, str] = {}
-    changed = False
-    for sheet, recommendation in recommendations.items():
-        worksheet = book[sheet]
-        values = [float(value) for value in recommendation.point]
-        output_column = len(values) + 1
-        if worksheet.cell(worksheet.max_row, output_column).value is None:
-            statuses[sheet] = "withheld: prior row has a blank output"
-            continue
-        duplicate = any(
-            all(
-                cell.value is not None
-                and np.isclose(float(cell.value), values[index], rtol=0.0, atol=1e-9)
-                for index, cell in enumerate(row[: len(values)])
-            )
-            for row in worksheet.iter_rows(min_row=2, max_col=len(values))
-        )
-        if duplicate:
-            statuses[sheet] = "withheld: duplicate input vector"
-            continue
-        previous_row = worksheet.max_row
-        next_row = previous_row + 1
-        for column in range(1, output_column + 1):
-            source = worksheet.cell(previous_row, column)
-            target = worksheet.cell(next_row, column)
-            if source.has_style:
-                target._style = copy(source._style)
-            target.number_format = source.number_format
-        for column, value in enumerate(values, start=1):
-            worksheet.cell(next_row, column, value)
-        worksheet.cell(next_row, output_column, None)
-        statuses[sheet] = f"appended to row {next_row}"
-        changed = True
-    if changed:
-        book.save(workbook)
-    return statuses
+    """Append an entire eligible round and immediately charge its budget."""
+    return append_round(workbook, recommendations)
 
 
 def parse_args() -> argparse.Namespace:
@@ -321,6 +285,12 @@ def main() -> None:
     workbook = args.workbook.resolve()
     if not workbook.exists():
         raise FileNotFoundError(workbook)
+    _, budget = read_budget(workbook)
+    refresh_repository(workbook)
+    print(f"Budget: {budget['used_rounds']} used, {budget['remaining_rounds']} remaining")
+    if budget["remaining_rounds"] == 0:
+        print("Evaluation budget exhausted; no further candidates generated.")
+        return
     rng = np.random.default_rng(args.seed)
     recommendations: dict[str, Recommendation] = {}
     reports: list[tuple[str, str]] = []
@@ -358,6 +328,10 @@ def main() -> None:
         if args.append:
             report += f" | append_result={statuses[sheet]}"
         print(f"{sheet}: {report}")
+
+    _, budget = read_budget(workbook)
+    refresh_repository(workbook)
+    print(f"Budget: {budget['used_rounds']} used, {budget['remaining_rounds']} remaining")
 
 
 if __name__ == "__main__":
