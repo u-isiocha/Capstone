@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "total_rounds": 13,
-  "used_rounds": 10,
-  "remaining_rounds": 3,
+  "used_rounds": 13,
+  "remaining_rounds": 0,
   "status": "active",
   "functions_per_round": 8,
   "counting_rule": "One complete eight-function round consumes one evaluation per function immediately when its input rows are appended, even while outputs are pending. Charge each round once; submission, replacement of pending inputs, and returned outputs do not charge again. Preview-only generation consumes no budget.",
@@ -135,7 +135,7 @@
     },
     {
       "round": 10,
-      "status": "appended_outputs_pending",
+      "status": "completed",
       "workbook_rows": {
         "function_1": 21,
         "function_2": 21,
@@ -146,7 +146,52 @@
         "function_7": 41,
         "function_8": 51
       }
+    },
+    {
+      "round": 11,
+      "status": "completed",
+      "appended_at": "2026-10-04T20:21:25.462895+00:00",
+      "workbook_rows": {
+        "function_1": 22,
+        "function_2": 22,
+        "function_3": 27,
+        "function_4": 42,
+        "function_5": 32,
+        "function_6": 32,
+        "function_7": 42,
+        "function_8": 52
+      }
+    },
+    {
+      "round": 12,
+      "status": "completed",
+      "appended_at": "2026-10-11T20:21:56.188785+00:00",
+      "workbook_rows": {
+        "function_1": 23,
+        "function_2": 23,
+        "function_3": 28,
+        "function_4": 43,
+        "function_5": 33,
+        "function_6": 33,
+        "function_7": 43,
+        "function_8": 53
+      }
+    },
+    {
+      "round": 13,
+      "status": "appended_outputs_pending",
+      "appended_at": "2026-10-18T19:36:23.205536+00:00",
+      "workbook_rows": {
+        "function_1": 24,
+        "function_2": 24,
+        "function_3": 29,
+        "function_4": 44,
+        "function_5": 34,
+        "function_6": 34,
+        "function_7": 44,
+        "function_8": 54
+      }
     }
   ],
-  "policy_updated_on": "2026-09-30"
+  "policy_updated_on": "2026-10-18"
 }

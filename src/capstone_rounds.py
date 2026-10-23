@@ -52,6 +52,12 @@ def append_round(workbook, recommendations):
         rows = {}
         for name in names:
             sheet = book[name]
+            # Ignore wholly empty trailing rows, including formatting-only rows.
+            # A row containing inputs but no output remains unfinished below.
+            while sheet.max_row > 1 and all(
+                cell.value is None for cell in sheet[sheet.max_row]
+            ):
+                sheet.delete_rows(sheet.max_row)
             values = np.asarray(recommendations[name].point, dtype=float)
             if (values.shape != (sheet.max_column - 1,)
                     or not np.all(np.isfinite(values))

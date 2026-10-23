@@ -8,13 +8,18 @@ repository/
 │   └── optimizer.py                  # Active BBO recommendation script
 ├── data/
 │   ├── Capstone.xlsx                 # Current query histories for functions 1-8
+│   ├── evaluation_budget.json        # Distributed budget and round-to-row mappings
 │   └── initial/                      # Original input/output NumPy arrays by function
 ├── docs/
 │   ├── function-descriptions.docx    # Challenge definitions and BO guidance
 │   ├── methodology.md                # Modelling strategy and evidence limits
 │   ├── datasheet.md                  # Dataset provenance, composition and maintenance
-│   ├── model-card.md                 # Ten-round approach, results and limitations
+│   ├── model-card.md                 # Current status and historical model review
+│   ├── round11-preview.md            # Round 11 review and saved queries
+│   ├── round12-preparation.md        # Round 12 preparation
+│   ├── round13-preparation.md        # Final-round preparation history
 │   └── repository-structure.md        # Layout and reproducibility rules
+├── tests/                            # Round-budget and append-safeguard checks
 ├── notebooks/                         # Optional exploratory analysis, kept separate from source
 └── results/                           # Generated figures and tables; do not overwrite raw data
 ```

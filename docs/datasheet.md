@@ -1,3 +1,9 @@
+Current snapshot (23 October 2026): all 13 allocated rounds have completed outputs; 279 observations, none pending. Budget: 13 used, zero remaining. See [final results](final-results.md). The distributed ledger mirrors the workspace ledger, which still labels round 13 as pending; the workbook confirms completion. Earlier dated discussion below is historical.
+
+Round 11 appended (4 October 2026): 11 rounds used, 2 remaining. Ten rounds are completed and all eight round-11 outputs are pending. [Saved queries](round11-preview.md). Historical review text below retains its dated context.
+
+Current snapshot (4 October 2026): all 255 observations are completed, including all eight round-10 outputs. The composition below describes the earlier 30 September snapshot. Current results: [round-11 review](round11-preview.md).
+
 # BBO capstone dataset datasheet
 
 Documentation version: 1.0. Snapshot reviewed: 30 September 2026. Related document: [model card](model-card.md).

@@ -107,7 +107,7 @@ def diagnose_trend(y: np.ndarray, function_number: int) -> str:
     scale = max(float(np.std(y)), 1e-12)
     best_before = float(np.max(y[:-6])) if len(y) > 6 else -np.inf
     if function_number == 2 and float(np.ptp(recent)) > 0.35 * scale:
-        return "noisy and recently worsening"
+        return "noisy, with variable recent observations"
     if float(np.max(recent)) > best_before + 0.05 * scale:
         return "improving, but with variation around the best region"
     if previous.size and float(np.mean(recent)) < float(np.mean(previous)) - 0.20 * scale:
@@ -122,13 +122,26 @@ def choose_policy(
     trend: str,
     current_best: float,
     external_benchmark: float | None,
+    remaining_rounds: int | None = None,
 ) -> Policy:
-    """Use supplied trends and benchmarks alongside fixed function rules.
+    """Use trends, benchmarks, and remaining rounds to choose acquisition.
 
-    Reassess rules after each completed round; no budget schedule is applied.
-    Round 9 review (2026-09-29): Function 5 improved to 4367.74, above
-    its 2883.2 benchmark, supporting the posterior-mean branch below.
+    Round 12 review: Function 3 returned near its best basin; Functions 7/8
+    remain near their incumbents after weaker latest queries. Retain late-budget
+    refinement. Function 1 still has no useful positive signal; Function 2
+    improved within its noisy best region. Function 4 deterioration activates
+    final-round local UCB branch; Functions 5/6 retain local refinement.
     """
+    if remaining_rounds == 1 and function_number == 4:
+        return Policy("ucb", 0.75, "mixture",
+                      "final round refines the incumbent after three declining nearby outputs")
+    if remaining_rounds is not None and remaining_rounds <= 2:
+        if function_number == 3:
+            return Policy("ei", 0.001, "exploitative",
+                          "final two rounds refine the best basin after weak boundary probes")
+        if function_number in (7, 8):
+            return Policy("ucb", 0.35, "mixture",
+                          "final two rounds favour local refinement with modest uncertainty")
     benchmark_gap = external_benchmark is not None and external_benchmark > current_best
     if function_number == 1:
         return Policy("ucb", 3.0, "exploratory", "uncertainty dominates an uninformative surface")
@@ -209,6 +222,7 @@ def recommend(
     n_global: int,
     n_local: int,
     restarts: int,
+    remaining_rounds: int | None = None,
 ) -> Recommendation:
     transformed_y = transform_output(y, function_number)
     gp = build_gp(x.shape[1], function_number, seed, restarts)
@@ -221,12 +235,35 @@ def recommend(
         trend,
         float(np.max(y)),
         EXTERNAL_OUTPUT_BENCHMARKS[f"function_{function_number}"],
+        remaining_rounds,
     )
     candidates = candidate_pool(x, y, function_number, rng, seed, n_global, n_local)
     mean, std = gp.predict(candidates, return_std=True)
     incumbent = x[np.argmax(y)]
+    if remaining_rounds is not None and remaining_rounds <= 2 and function_number in (3, 6, 7, 8):
+        radius = {3: 0.15, 6: 0.08, 7: 0.20, 8: 0.20}[function_number]
+        local = np.linalg.norm(candidates - x[np.argmax(y)], axis=1) <= radius
+        if not np.any(local):
+            raise ValueError("No candidates inside the late-budget refinement region")
+        candidates, mean, std = candidates[local], mean[local], std[local]
+
+    if remaining_rounds == 1 and function_number == 4:
+        local = np.linalg.norm(candidates - x[np.argmax(y)], axis=1) <= 0.12
+        if not np.any(local):
+            raise ValueError("No candidates inside final-round Function 4 region")
+        candidates, mean, std = candidates[local], mean[local], std[local]
+
+    if function_number == 6:
+        # Refine the strongest recipe; the late-budget mask is tighter.
+        candidates, mean, std = restrict_to_radius(candidates, mean, std, incumbent, 0.15)
     if function_number == 5 and policy.acquisition == "mean":
-        candidates, mean, std = restrict_to_radius(candidates, mean, std, incumbent, 0.10)
+        distance = np.linalg.norm(candidates - incumbent, axis=1)
+        nearest_observation = np.min(
+            np.linalg.norm(candidates[:, None, :] - x[None, :, :], axis=2), axis=1
+        )
+        local = (distance <= 0.10) & (distance >= 0.02) & (nearest_observation >= 0.005)
+        if np.any(local):
+            candidates, mean, std = candidates[local], mean[local], std[local]
     if function_number in (7, 8) and policy.acquisition == "mean":
         candidates, mean, std = restrict_to_radius(candidates, mean, std, incumbent, 0.25)
     if function_number == 2 and "noisy" in trend:
@@ -307,7 +344,7 @@ def main() -> None:
             raise ValueError(f"{sheet} contains an input outside [0, 1].")
         result = recommend(
             x, y, function_number, rng, args.seed + function_number,
-            args.n_global, args.n_local, args.restarts,
+            args.n_global, args.n_local, args.restarts, budget["remaining_rounds"],
         )
         recommendations[sheet] = result
         best_index = int(np.argmax(y))

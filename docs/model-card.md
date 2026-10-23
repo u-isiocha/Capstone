@@ -1,3 +1,9 @@
+Current snapshot (23 October 2026): all 13 allocated rounds have completed outputs; 279 observations, none pending. Budget: 13 used, zero remaining. See [final results](final-results.md). The distributed ledger mirrors the workspace ledger, which still labels round 13 as pending; the workbook confirms completion. Earlier dated discussion below is historical.
+
+Round 11 appended (4 October 2026): 11 rounds used, 2 remaining. Ten rounds are completed and all eight round-11 outputs are pending. [Saved queries](round11-preview.md). Historical review text below retains its dated context.
+
+Current review (4 October 2026): ten rounds are completed, with three remaining. The historical narrative below precedes the current Function 5 and 6 local restrictions. Current observations and policy: [round-11 review](round11-preview.md).
+
 # BBO optimisation model card
 
 Documentation version: 1.0. Reviewed: 30 September 2026. Dataset: [datasheet](datasheet.md).

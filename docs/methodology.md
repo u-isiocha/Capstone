@@ -1,33 +1,11 @@
+Current snapshot (23 October 2026): all 13 allocated rounds have completed outputs; 279 observations, none pending. Budget: 13 used, zero remaining. See [final results](final-results.md). The distributed ledger mirrors the workspace ledger, which still labels round 13 as pending; the workbook confirms completion. Earlier dated discussion below is historical.
+
 # Optimisation methodology
 
-## Surrogate model
+Separate ARD RBF Gaussian processes with learned noise fit completed observations only. Function 5 uses log outputs. Sobol global candidates and multiscale local perturbations support UCB, EI or posterior-mean selection.
 
-`src/optimizer.py` fits a separate scikit-learn `GaussianProcessRegressor` to each function's completed observations. Blank outputs are excluded. The covariance model is a constant kernel multiplied by an ARD RBF kernel, so every input dimension receives its own optimised length scale. A `WhiteKernel` estimates observation noise, with wider noise bounds for noisy Function 2. Outputs are normalised and kernel hyperparameters are fitted with multiple optimiser restarts.
+Round-11 review: eleven completed rounds, two remaining before round 12 preparation. The executable policy now reads the remaining budget: at two or fewer remaining rounds, Function 3 uses EI within distance 0.15 of its best point after two weak boundary probes; Function 6 tightens refinement to distance 0.08; Functions 7 and 8 use UCB coefficient 0.35 within distance 0.20 of their improving incumbents. Function 1 retains exploratory UCB because its surface remains uninformative. Function 2 retains near-best noise validation. Function 5 retains posterior mean within distance 0.02 to 0.10; its latest inward perturbation was below the corner maximum. Function 4 retains its trend-based policy.
 
-Function 5 is fitted in log-output space to stabilise its large positive scale. Printed forecasts are transformed back to the workbook scale and remain surrogate estimates, not observations.
+[Round-11 preparation](round11-preview.md) is historical. The final-two-round acquisition and radius changes are now implemented in both optimiser scripts; other policy rules remain trend-based. Predictions remain unverified.
 
-## Candidate search and acquisition
-
-The candidate pool combines scrambled Sobol coverage of `[0, 1]^d` with perturbations at radii `0.20`, `0.10`, `0.05`, `0.025`, and `0.01` around the three strongest observations. Exact duplicate vectors are removed.
-
-Acquisition is reassessed from the current observations:
-
-- Function 1 uses high-UCB exploration because its completed outputs remain essentially uninformative.
-- Function 2 estimates noise and restricts EI to non-duplicate near-repeats when recent results are noisy.
-- Function 3 uses UCB while its output-only benchmark exceeds the workbook maximum.
-- Function 5 uses UCB only when an external benchmark exceeds the observed maximum. Otherwise, it exploits posterior mean inside a local trust region.
-- Function 4 uses moderate UCB after deterioration and EI otherwise.
-- Functions 7 and 8 use cautious UCB while trends remain mixed, then local posterior-mean refinement when a strong basin plateaus.
-- Other stable functions use EI for local refinement.
-
-The script reports the fitted kernel, current best observation, trend diagnosis, candidate, acquisition type, predictive uncertainty, and a caveat whenever the forecast exceeds all observed outputs.
-
-## External evidence and safeguards
-
-Output-only external observations are benchmarks, never training rows. The recorded benchmarks are `-0.00551` for Function 3, `2883.2` for Function 5, and `9.9369` for Function 8. The workbook observations currently exceed the Function 5 and Function 8 benchmarks, while Function 3 still warrants broader exploration.
-
-Append mode never overwrites outputs, never treats blanks as zero, and never appends when a sheet's final output is blank. It blocks duplicate vectors, copies the previous row's formatting, and does not resave the workbook when every recommendation is withheld. All eight sheets must pass validation before any candidate is appended. Appending immediately charges one round in the budget ledger, including pending outputs; later submission or output entry does not charge it again. Use `--no-append` for an uncharged preview and `--seed` for reproducibility. Refresh the local repository data and budget snapshot on every query request.
-
-## Limitations
-
-An RBF GP assumes a smooth response and may extrapolate poorly in sparse or high-dimensional regions. Learned length scales or noise levels at their bounds are diagnostic warnings rather than proof of feature relevance. Function 2 still requires repeated validation, and no surrogate prediction establishes a global optimum until the black box is evaluated.
+All eight sheets must pass validation before append. Pending outputs or duplicates withhold the whole round. Appending preserves formatting and charges the round immediately once. Preview consumes no budget. Repository snapshots refresh on query requests; the workspace ledger remains authoritative.
