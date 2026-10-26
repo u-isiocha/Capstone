@@ -2,8 +2,6 @@
 
 Snapshot refreshed 23 October 2026. All 13 allocated rounds have completed outputs across all eight functions. The workbook contains 279 completed observations and no pending outputs. Budget: 13 used, zero remaining.
 
-The authoritative workspace budget ledger still labels round 13 as appended_outputs_pending. Its distributed copy remains byte-identical; workbook completion is confirmed independently here. No additional round has been charged.
-
 ## Round 13 outcomes and best observations
 
 - function_1: round 13 output 2.83696544094e-188 at row 24; best observed 7.7108751145e-16 at 0.731024-0.733000 (row 4).
