@@ -4,7 +4,7 @@ This project recommends the next input vector for eight unknown functions while 
 
 ## Repository layout
 
-Read the [dataset datasheet](docs/datasheet.md) for provenance, composition, permitted-use gaps and maintenance, and the [model card](docs/model-card.md) for modelling details and verified results. The current snapshot contains all 13 completed rounds (279 observations, no pending outputs); all 13 allocated rounds are used. See [final results](docs/final-results.md), including the outstanding ledger status discrepancy.
+Read the [dataset datasheet](docs/datasheet.md) for provenance, composition, permitted-use gaps and maintenance, and the [model card](docs/model-card.md) for modelling details and verified results. The current snapshot contains all 13 completed rounds. See [final results](docs/final-results.md), including the outstanding ledger status discrepancy.
 
 See [the repository structure](docs/repository-structure.md). The active optimiser is `src/optimizer.py`, the current evaluation history is `data/Capstone.xlsx`, and the challenge definitions are in `docs/function-descriptions.docx`.
 
